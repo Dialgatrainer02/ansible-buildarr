@@ -1,3 +1,9 @@
+# todo
+change transmission to qbittorent 
+get wireguard woking with qbit image
+automate qbit setup
+enable privoxy for indexers in prowlar
+
 # Buildarr example Ansible playbooks
 
 A collection of Ansible playbooks and roles that use Docker Compose and Buildarr to automatically deploy, configure and manage Arr applications.
