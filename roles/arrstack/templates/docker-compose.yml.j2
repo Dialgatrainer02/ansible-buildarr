@@ -21,7 +21,6 @@ services:
       TZ: "{{ arrstack_timezone }}"
       PUID: "{{ arrstack_volume_dir_owner }}"
       PGID: "{{ arrstack_volume_dir_group }}"
-      TRANSMISSION_WEB_HOME: "/flood-for-transmission/"
       WHITELIST: "*.*.*.*"
 
   # FlareSolverr instance for bypassing CloudFlare.
@@ -73,15 +72,32 @@ services:
     depends_on:
       - transmission
 
-  # Sonarr instance for grabbing anime series.
-  sonarr-anime:
-    image: "{{ arrstack_sonarr_container_uri }}:{{ arrstack_sonarr_container_tag }}"
-    hostname: sonarr-anime
+  
+  radarr-hd:
+    image: "{{ arrstack_radarr_container_uri }}:{{ arrstack_radarr_container_tag }}"
+    hostname: radarr-hd
     restart: always
     ports:
-      - 127.0.0.1:8991:8989
+      - 127.0.0.1:7878:7878
     volumes:
-      - "./sonarr-anime:/config"
+      - "./radarr-hd:/config"
+      - type: bind
+        source: "{{ arrstack_data_dir }}"
+        target: /data
+    environment:
+      TZ: "{{ arrstack_timezone }}"
+      PUID: "{{ arrstack_volume_dir_owner }}"
+      PGID: "{{ arrstack_volume_dir_group }}"
+    depends_on:
+      - transmission
+  radarr-4k:
+    image: "{{ arrstack_radarr_container_uri }}:{{ arrstack_radarr_container_tag }}"
+    hostname: radarr-4k
+    restart: always
+    ports:
+      - 127.0.0.1:7870:7878
+    volumes:
+      - "./radarr-4k:/config"
       - type: bind
         source: "{{ arrstack_data_dir }}"
         target: /data
@@ -113,8 +129,17 @@ services:
       - flaresolverr
       - sonarr-hd
       - sonarr-4k
-      - sonarr-anime
-
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL: debug
+      - TZ: "{{ arrstack_timezone }}"
+    ports:
+      - 5055:5055
+    volumes:
+      - ./jellyseer/config:/app/config
+    restart: unless-stopped
   # Buildarr instance for managing instance configurations.
   buildarr:
     image: "{{ arrstack_buildarr_container_uri }}:{{ arrstack_buildarr_container_tag }}"
@@ -131,5 +156,4 @@ services:
     depends_on:
       - sonarr-hd
       - sonarr-4k
-      - sonarr-anime
       - prowlarr

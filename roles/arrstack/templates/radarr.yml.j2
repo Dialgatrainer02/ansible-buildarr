@@ -1,58 +1,35 @@
 ---
-# Sonarr instance configuration in Buildarr.
+# radarr instance configuration in Buildarr.
 
-sonarr:
+radarr:
 
   # Configuration common to all instances.
-  port: 8989
+  port: 7878
   protocol: "http"
   settings:
     media_management:
-      rename_episodes: true
+      rename_movies: true
       replace_illegal_characters: true
-      standard_episode_format: >-
-        {Series TitleYear}
-        -
-        S{season:00}E{episode:00}
-        -
-        {Episode CleanTitle}
-        [{Preferred Words }{Quality Full}]
-        {[MediaInfo VideoDynamicRangeType]}
-        [{MediaInfo VideoBitDepth}bit]
-        {[MediaInfo VideoCodec]}
-        [{Mediainfo AudioCodec}{ Mediainfo AudioChannels}]
-        {[MediaInfo AudioLanguages]}
-        {[Release Group]}
-        -
-        Default
-      daily_episode_format: >-
-        {Series TitleYear}
-        -
-        {Air-Date}
-        -
-        {Episode CleanTitle}
-        [{Preferred Words }{Quality Full}]
-        {[MediaInfo VideoDynamicRangeType]}
-        [{MediaInfo VideoBitDepth}bit]
-        {[MediaInfo VideoCodec]}
-        [{Mediainfo AudioCodec}{ Mediainfo AudioChannels}]
-        {[MediaInfo AudioLanguages]}
-        {[Release Group]}
-        -
-        Default
-      series_folder_format: "{Series TitleYear} [imdbid-{ImdbId}]"
-      season_folder_format: "Season {season:00}"
-      specials_folder_format: "Specials"
-      multiepisode_style: "range"
-      create_empty_series_folders: false
+      standard_movie_format: "\
+        {Movie CleanTitle} - \
+        {Edition Tags }\
+        {[Custom Formats] }\
+        {[Quality Full] }\
+        {[MediaInfo 3D] }\
+        {[MediaInfo VideoDynamicRangeType] }\
+        [{Mediainfo AudioCodec}{ Mediainfo AudioChannels}]\
+        { [Mediainfo VideoCodec]}\
+        { [Release Group]} - \
+        Default"
+      movie_folder_format: '{Movie CleanTitle} ({Release Year}) [imdbid-{ImdbId}]'
+      create_missing_movie_folders: false
       delete_empty_folders: false
-      episode_title_required: "always"
       use_hardlinks: true
       import_extra_files: false
       unmonitor_deleted_files: false
       propers_and_repacks: "do-not-prefer"
       analyze_video_files: true
-      rescan_series_folder_after_refresh: "always"
+      rescan_folder_after_refresh: "always"
       change_file_date: "none"
       # recycling_bin: "/videos/shows/deleted"
       recycling_bin_cleanup: 7
@@ -75,28 +52,24 @@ sonarr:
       release_profiles:
         delete_unmanaged: true
     quality:
-      trash_id: "bef99584217af744e404ed44a33af589"  # series
+      trash_id: "aed34b9f60ee115dfa7918b742336277 "  # series
     metadata:
       kodi_emby:
-        enable: false
-        series_metadata: true
-        series_metadata_url: true
-        episode_metadata: true
-        series_images: true
-        season_images: true
-        episode_images: true
+        enable: true
+        movie_metadata: true
+        movie_metadata_url: true
+        movie_metadata_language: english
+        movie_images: true
+        use_movie_nfo: true
+        add_collection_name: true
       roksbox:
-        enable: false
-        episode_metadata: true
-        series_images: true
-        season_images: true
-        episode_images: true
+        enable: true
+        movie_metadata: true
+        movie_images: true
       wdtv:
-        enable: false
-        episode_metadata: true
-        series_images: true
-        season_images: true
-        episode_images: true
+        enable: true
+        movie_metadata: true
+        movie_images: true
     general:
       proxy:
         enable: false
@@ -124,17 +97,17 @@ sonarr:
   # Instance-specific configuration.
   instances:
 
-    # Sonarr instance for grabbing HD/SD TV shows.
-    sonarr-hd:
-      api_key: "{{ arrstack_instance_apikeys['sonarr-hd'] }}"
+    # radarr instance for grabbing HD/SD TV shows.
+    radarr-hd:
+      api_key: "{{ arrstack_instance_apikeys['radarr-hd'] }}"
       settings:
         media_management:
           root_folders:
-            - "/data/media/shows"
+            - "/data/media/movies"
         profiles:
           quality_profiles:
             definitions:
-              "HD/SD Shows":
+              "HD/SD movies":
                 upgrades_allowed: true
                 upgrade_until: "Bluray-1080p"
                 qualities:
@@ -199,7 +172,7 @@ sonarr:
                     - 4861d8238f9234606df6721df6e27deb  # Ignore AV1
         download_clients:
           definitions:
-            "Transmission (HD Shows)":
+            "Transmission (HD Movies)":
               type: "transmission"
               enable: true
               host: "transmission"
@@ -209,66 +182,25 @@ sonarr:
               username: null
               password: null
               # category: "hd"
-              directory: "/data/torrents/shows/hd"
+              directory: "/data/torrents/movies/hd"
               recent_priority: "last"
               older_priority: "last"
               add_paused: false
         general:
           host:
-            instance_name: "Sonarr (HD/SD TV Shows)"
+            instance_name: "radarr (HD/SD TV Movies)"
 
-    # Sonarr instance for grabbing 4K TV shows.
-    sonarr-4k:
-      api_key: "{{ arrstack_instance_apikeys['sonarr-4k'] }}"
+    # radarr instance for grabbing 4K TV shows.
+    radarr-4k:
+      api_key: "{{ arrstack_instance_apikeys['radarr-4k'] }}"
       settings:
         media_management:
-          standard_episode_format: >-
-            {Series TitleYear}
-            -
-            S{season:00}E{episode:00}
-            -
-            {Episode CleanTitle}
-            [{Preferred Words }{Quality Full}]
-            {[MediaInfo VideoDynamicRangeType]}
-            [{MediaInfo VideoBitDepth}bit]
-            {[MediaInfo VideoCodec]}
-            [{Mediainfo AudioCodec} {Mediainfo AudioChannels}]
-            {[MediaInfo AudioLanguages]}
-            {[Release Group]}
-          daily_episode_format: >-
-            {Series TitleYear}
-            -
-            {Air-Date}
-            -
-            {Episode CleanTitle}
-            [{Preferred Words }{Quality Full}]
-            {[MediaInfo VideoDynamicRangeType]}
-            [{MediaInfo VideoBitDepth}bit]
-            {[MediaInfo VideoCodec]}
-            [{Mediainfo AudioCodec} {Mediainfo AudioChannels}]
-            {[MediaInfo AudioLanguages]}
-            {[Release Group]}
-          anime_episode_format: >-
-            {Series TitleYear}
-            -
-            S{season:00}E{episode:00}
-            -
-            {absolute:000}
-            -
-            {Episode CleanTitle}
-            [{Preferred Words }{Quality Full}]
-            {[MediaInfo VideoDynamicRangeType]}
-            [{MediaInfo VideoBitDepth}bit]
-            {[MediaInfo VideoCodec]}
-            [{Mediainfo AudioCodec} { Mediainfo AudioChannels}]
-            {MediaInfo AudioLanguages}
-            {[Release Group]}
           root_folders:
-            - "/data/media/shows"
+            - "/data/media/movies"
         profiles:
           quality_profiles:
             definitions:
-              "4K Shows":
+              "4K movies":
                 upgrades_allowed: true
                 upgrade_until: "Bluray-2160p"
                 qualities:
@@ -320,7 +252,7 @@ sonarr:
                     - 4861d8238f9234606df6721df6e27deb  # Ignore AV1
         download_clients:
           definitions:
-            "Transmission (4K Shows)":
+            "Transmission (4K Movies)":
               type: "transmission"
               enable: true
               host: "transmission"
@@ -330,10 +262,10 @@ sonarr:
               username: null
               password: null
               # category: "4k"
-              directory: "/data/torrents/shows/4k"
+              directory: "/data/torrents/movies/4k"
               recent_priority: "last"
               older_priority: "last"
               add_paused: false
         general:
           host:
-            instance_name: "Sonarr (4K Shows)"
+            instance_name: "radarr (4K Movies)"

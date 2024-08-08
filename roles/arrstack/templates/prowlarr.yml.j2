@@ -59,21 +59,9 @@ prowlarr:
                 query_limit: {{ arrstack_prowlarr_query_limit }}
                 tags:
                   - "shows"
+                  - "movies"
                 fields:
                   torrentBaseSettings.seedRatio: 3
-              "Nyaa.si":
-                type: "nyaasi"
-                enable: true
-                sync_profile: "Standard"
-                redirect: false
-                priority: 25
-                grab_limit: {{ arrstack_prowlarr_grab_limit }}
-                query_limit: {{ arrstack_prowlarr_query_limit }}
-                tags:
-                  - "anime-shows"
-                fields:
-                  torrentBaseSettings.seedRatio: 3
-                  prefer_magnet_links: true
           proxies:
             definitions:
               "FlareSolverr":
@@ -82,6 +70,7 @@ prowlarr:
                 request_timeout: 60
                 tags:
                   - "shows"
+                  - "movies"
         apps:
           applications:
             definitions:
@@ -114,18 +103,33 @@ prowlarr:
                 anime_sync_categories: []
                 tags:
                   - "shows"
-              "Sonarr (Anime Shows)":
-                type: "sonarr"
-                instance_name: "sonarr-anime"
+              "Radarr (SD/HD movies)":
+                type: "radarr"
+                instance_name: "radarr-hd"
                 prowlarr_url: "http://prowlarr:9696"
-                base_url: "http://sonarr-anime:8989"
+                base_url: "http://radarr-hd:7878"
                 sync_level: "full-sync"
                 sync_categories:
-                  - "TV/Anime"
-                anime_sync_categories:
-                  - "TV/Anime"
+                  - "Movies/WEB-DL"
+                  - "Movies/Foreign"
+                  - "Movies/SD"
+                  - "Movies/HD"
+                  - "Movies/Other"
                 tags:
-                  - "anime-shows"
+                  - "movies"
+              "Radarr (4k movies)":
+                type: "radarr"
+                instance_name: "radarr-4k"
+                prowlarr_url: "http://prowlarr:9696"
+                base_url: "http://radarr-hd:7870"
+                sync_level: "full-sync"
+                sync_categories:
+                  - "Movies/WEB-DL"
+                  - "Movies/Foreign"
+                  - "Movies/UHD"
+                  - "Movies/Other"
+                tags:
+                  - "movies"
           sync_profiles:
             definitions:
               "Standard":
@@ -151,7 +155,6 @@ prowlarr:
         tags:
           definitions:
             - "shows"
-            - "anime-shows"
         general:
           host:
             instance_name: "Prowlarr"

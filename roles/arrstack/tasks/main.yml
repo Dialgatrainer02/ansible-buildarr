@@ -39,10 +39,11 @@
     - torrents
     - torrents/shows/hd
     - torrents/shows/4k
-    - torrents/shows/anime
+    - torrents/movies/hd
+    - torrents/movies/4k
     - media
     - media/shows
-    - media/anime
+    - media/movies
   when: arrstack_data_dir_create
 
 - name: Create Docker Compose environment file
@@ -62,8 +63,10 @@
       - flaresolverr
       - sonarr-hd
       - sonarr-4k
-      - sonarr-anime
+      - radarr-hd
+      - radarr-4k
       - prowlarr
+      - jellyseer
 
 - name: Wait for all Docker Compose services to be accessible
   ansible.builtin.uri:
@@ -79,9 +82,11 @@
     - "http://localhost:9091"
     - "http://localhost:8191"
     - "http://localhost:8989"
+    - "http://localhost:7878"
+    - "http://localhost:7870"
     - "http://localhost:8990"
-    - "http://localhost:8991"
     - "http://localhost:9696"
+    - "http://localhost:5055"
 
 - name: Fetch API keys for all Buildarr-managed instances
   ansible.builtin.command:
@@ -92,10 +97,12 @@
       - "/opt/arrstack/{{ item }}/config.xml"
   register: "arrstack_instance_apikeys_raw"
   loop:
-    - sonarr-hd
-    - sonarr-4k
-    - sonarr-anime
-    - prowlarr
+      - sonarr-hd
+      - sonarr-4k
+      - radarr-hd
+      - radarr-4k
+      - prowlarr
+      - jellyseer
 
 - name: Parse Buildarr-managed instance API keys
   ansible.builtin.set_fact:
@@ -122,6 +129,8 @@
     - buildarr.yml
     - sonarr.yml
     - prowlarr.yml
+    - jellyseer.yml
+    - radarr.yml
 
 - name: Start all Docker Compose services
   community.docker.docker_compose:
