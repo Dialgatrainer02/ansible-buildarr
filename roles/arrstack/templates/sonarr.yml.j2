@@ -199,20 +199,18 @@ sonarr:
                     - 4861d8238f9234606df6721df6e27deb  # Ignore AV1
         download_clients:
           definitions:
-            "Transmission (HD Shows)":
-              type: "transmission"
+            "qBittorrent (HD Shows)":
+              type: "qbittorrent"
               enable: true
-              host: "transmission"
-              port: 9091
+              host: "qbittorrent"
+              port: 8080
               use_ssl: false
-              url_base: "/transmission/"
-              username: null
-              password: null
+              username: olivia
+              password: {{qbit_password}}
               # category: "hd"
               directory: "/data/torrents/shows/hd"
               recent_priority: "last"
               older_priority: "last"
-              add_paused: false
         general:
           host:
             instance_name: "Sonarr (HD/SD TV Shows)"
@@ -320,20 +318,18 @@ sonarr:
                     - 4861d8238f9234606df6721df6e27deb  # Ignore AV1
         download_clients:
           definitions:
-            "Transmission (4K Shows)":
-              type: "transmission"
+            "qBittorrent (4K Shows)":
+              type: "qbittorrent"
               enable: true
-              host: "transmission"
-              port: 9091
+              host: "qbittorrent"
+              port: 8080
               use_ssl: false
-              url_base: "/transmission/"
-              username: null
-              password: null
+              username: olivia
+              password: {{qbit_password}}
               # category: "4k"
               directory: "/data/torrents/shows/4k"
               recent_priority: "last"
               older_priority: "last"
-              add_paused: false
         general:
           host:
             instance_name: "Sonarr (4K Shows)"

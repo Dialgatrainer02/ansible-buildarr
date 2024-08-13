@@ -137,21 +137,6 @@ prowlarr:
                 enable_interactive_search: true
                 enable_automatic_search: true
                 minimum_seeders: 5
-        download_clients:
-          definitions:
-            "Transmission (Prowlarr)":
-              type: "transmission"
-              enable: true
-              host: "transmission"
-              port: 9091
-              use_ssl: false
-              url_base: "/transmission/"
-              username: null
-              password: null
-              # category: "prowlarr"
-              directory: "/data/torrents/prowlarr"
-              client_priority: "last"
-              add_paused: false
         tags:
           definitions:
             - "shows"

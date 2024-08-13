@@ -6,14 +6,14 @@ version: "3.7"
 services:
 
   # Transmission instance for downloading torrents.
-  transmission:
-    image: "{{ arrstack_transmission_container_uri }}:{{ arrstack_transmission_container_tag }}"
-    hostname: transmission
+  qbittorrent:
+    image: ghcr.io/hotio/qbittorrent
+    hostname: qbittorrent
     restart: always
     ports:
-      - 127.0.0.1:9091:9091
+      - 8080:8080
     volumes:
-      - ./transmission:/config
+      - ./config/qbittorrent:/config
       - type: bind
         source: "{{ arrstack_data_dir }}/torrents"
         target: /data/torrents
@@ -21,7 +21,24 @@ services:
       TZ: "{{ arrstack_timezone }}"
       PUID: "{{ arrstack_volume_dir_owner }}"
       PGID: "{{ arrstack_volume_dir_group }}"
-      WHITELIST: "*.*.*.*"
+      WEBUI_PORTS: 8080/tcp,8080/udp
+      VPN_ENABLED: true 
+      VPN_CONF: wg0
+      VPN_PROVIDER: generic 
+      VPN_LAN_NETWORK: 192.168.1.0/24
+      VPN_LAN_LEAK_ENABLED: false
+      VPN_AUTO_PORT_FORWARD: false
+      VPN_KEEP_LOCAL_DNS: false 
+      VPN_FIREWALL_TYPE: auto
+      VPN_HEALTHCHECK_ENABLED: true
+      PRIVOXY_ENABLED: true
+      UNBOUND_ENABLED: false
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=1
+      
 
   # FlareSolverr instance for bypassing CloudFlare.
   flaresolverr:

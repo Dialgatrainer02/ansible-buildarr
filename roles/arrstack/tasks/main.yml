@@ -1,5 +1,13 @@
 ---
-
+- name: set qbittorrent password
+  ansible.builtin.set_fact:
+    qbit_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          36383833386262333733393430663632653331633063363134376535316232613438333331323535
+          3832333433343833376263656131633737613762336666660a356161333331666338363165383163
+          62303631373938646532623133393030313866353434663839623333626266303236366433363363
+          3961323536386637340a343065333633303630663362353764643832376666346138393965323338
+          65623437666665633162303163613064353565613530646435653537323366366438
 - name: Set Arr stack default timezone (if not set manually)
   block:
     - name: Fetch target host timezone
@@ -53,13 +61,28 @@
     owner: root
     group: root
     mode: 0600
+- name: create qbitorrent config directories
+  ansible.builtin.file:
+    state: directory
+    path: "{{arrstack_env_dir}}/{{item}}"
+  loop:
+    - config
+    - config/qbittorrent
+    - config/wireguard
+- name: create qbittorrent config file
+  ansible.builtin.copy:
+    src: qBittorrent.conf
+    dest: "{{arrstack_env_dir}}/config/qbittorrent/config/qBittorrent.conf"
+- name: wg0 reminder
+  ansible.builtin.debug:
+    msg: "you are making wg0 via ansible you need to fix that before testingor place it there manually as this isnt doing it" 
 
 - name: Start all Docker Compose services except for Buildarr
   community.docker.docker_compose:
     project_name: arrstack
     project_src: /opt/arrstack
     services:
-      - transmission
+      - qbittorrent
       - flaresolverr
       - sonarr-hd
       - sonarr-4k
@@ -79,7 +102,7 @@
   retries: 300
   delay: 1
   loop:
-    - "http://localhost:9091"
+    - "http://localhost:8080"
     - "http://localhost:8191"
     - "http://localhost:8989"
     - "http://localhost:7878"
