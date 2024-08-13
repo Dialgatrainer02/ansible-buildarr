@@ -1,6 +1,6 @@
 # todo
 get wireguard woking with qbit image(wip as i need to fix the rest of the home lab first)
-enable privoxy for indexers in prowlar
+
 
 # Buildarr example Ansible playbooks
 

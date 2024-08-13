@@ -64,6 +64,10 @@ prowlarr:
                   torrentBaseSettings.seedRatio: 3
           proxies:
             definitions:
+              "privoxy":
+                type: http
+                hostname: http://qbittorrent
+                port: 8080
               "FlareSolverr":
                 type: "flaresolverr"
                 host_url: "http://flaresolverr:8191"
